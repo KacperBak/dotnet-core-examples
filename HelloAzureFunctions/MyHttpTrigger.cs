@@ -7,6 +7,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Web.Http;
 
 namespace HelloAzureFunctions
 {
@@ -40,16 +42,21 @@ namespace HelloAzureFunctions
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            //string name = req.Query["name"];
-            string name = "Micha";
+            // access headers
+            log.LogInformation("host: '{0}'", req.GetTypedHeaders().Host);
+            log.LogInformation("blub: '{0}'", req.Headers["blub"]);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            // Creating the result
+            HttpResponseMessage httpResponseMessage = new HttpResponseMessage();
+            httpResponseMessage.StatusCode = System.Net.HttpStatusCode.BadRequest;
 
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            // setting custom headers
+            return new ResponseMessageResult(httpResponseMessage);
+
         }
+    }
+
+    public static class OkObjectResultWithHeader{
+
     }
 }
