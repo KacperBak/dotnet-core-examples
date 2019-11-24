@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json.schemastore.org/proxies",
+    "proxies": {
+        "proxy1": {
+            "matchCondition": {
+                "methods": [ "GET" ],
+                "route": "/blub/MyHttpTrigger2"
+            },
+            "responseOverrides": {
+                "response.headers.Content-Type": "text/plain"
+            }
+        }
+    }
+}
